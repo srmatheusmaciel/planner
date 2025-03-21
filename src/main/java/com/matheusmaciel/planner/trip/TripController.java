@@ -32,9 +32,7 @@ public class TripController {
     public ResponseEntity<TripCreateResponse> createTrip(@RequestBody TripRequestPayload payload) {
         Trip newTrip = new Trip(payload);
         tripRepository.save(newTrip);
-        this.participantService
-        .registerParticipantsToEvent(payload.emails_to_invite(),
-                                     newTrip.getId());
+        this.participantService.registerParticipantsToEvent(payload.emails_to_invite(), newTrip);
 
         return ResponseEntity.ok().body(new TripCreateResponse(newTrip.getId()));
 

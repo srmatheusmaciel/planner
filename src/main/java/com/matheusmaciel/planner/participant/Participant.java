@@ -29,7 +29,7 @@ public class Participant {
     private Boolean isConfirmed;
 
     @ManyToOne
-    @Column(name= "trip_id", nullable = false)
+    @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
     public Participant(String email, Trip trip) {
