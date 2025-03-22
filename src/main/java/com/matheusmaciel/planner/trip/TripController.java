@@ -46,6 +46,7 @@ public class TripController {
         Optional<Trip> trip = this.tripRepository.findById(id);
         if(trip.isPresent()){
             Trip rawTrip = trip.get();
+            
             ParticipantCreateResponse participantResponse = this.participantService.registerParticipantToEvent(payload.email(), rawTrip);
 
             if(rawTrip.getIsConfirmed()){
