@@ -1,5 +1,8 @@
 package com.matheusmaciel.planner.trip;
 
+import com.matheusmaciel.planner.participant.Participant;
+import com.matheusmaciel.planner.participant.ParticipantCreateResponse;
+import com.matheusmaciel.planner.participant.ParticipantRequestPayload;
 import com.matheusmaciel.planner.participant.ParticipantService;
 
 
@@ -36,6 +39,23 @@ public class TripController {
 
         return ResponseEntity.ok().body(new TripCreateResponse(newTrip.getId()));
 
+    }
+
+    @PostMapping("/{id}/invite")
+    public ResponseEntity<ParticipantCreateResponse> inviteParticipant(@PathVariable UUID id, @RequestBody ParticipantRequestPayload payload) {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+        if(trip.isPresent()){
+            Trip rawTrip = trip.get();
+            ParticipantCreateResponse participantResponse = this.participantService.registerParticipantToEvent(payload.email(), rawTrip);
+
+            if(rawTrip.getIsConfirmed()){
+                this.participantService.triggerConfirmationEmailToParticipant(payload.email());
+            }
+
+            return ResponseEntity.ok(participantResponse);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
