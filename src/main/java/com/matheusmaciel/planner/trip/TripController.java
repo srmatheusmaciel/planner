@@ -2,12 +2,13 @@ package com.matheusmaciel.planner.trip;
 
 import com.matheusmaciel.planner.participant.Participant;
 import com.matheusmaciel.planner.participant.ParticipantCreateResponse;
+import com.matheusmaciel.planner.participant.ParticipantData;
 import com.matheusmaciel.planner.participant.ParticipantRequestPayload;
 import com.matheusmaciel.planner.participant.ParticipantService;
 
 
 import java.util.UUID;
-
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -60,29 +61,12 @@ public class TripController {
     }
 
     @GetMapping("/{id}")
-     public ResponseEntity<Trip> getTripDetails(@PathVariable UUID id){
+    public ResponseEntity<Trip> getTripDetails(@PathVariable UUID id){
          Optional<Trip> trip = this.tripRepository.findById(id);
          return trip.map(ResponseEntity::ok)
          .orElseGet(() -> ResponseEntity.notFound().build());
         
      }
-
-     @PutMapping("/{id}")
-     public ResponseEntity<Trip> updateTrip(@PathVariable UUID id, @RequestBody TripRequestPayload payload){
-         Optional<Trip> trip = this.tripRepository.findById(id);
-
-         if(trip.isPresent()){
-            Trip rawTrip = trip.get();
-            rawTrip.setDestination(payload.destination());
-            rawTrip.setStartsAt(LocalDateTime.parse(payload.starts_at(), DateTimeFormatter.ISO_DATE_TIME));
-            rawTrip.setEndsAt(LocalDateTime.parse(payload.ends_at(), DateTimeFormatter.ISO_DATE_TIME));
-            this.tripRepository.save(rawTrip);
-            return ResponseEntity.ok().body(rawTrip);
-        }
-
-        return ResponseEntity.notFound().build();
-                                     
-    }
 
     @GetMapping("/{id}/confirm")
     public ResponseEntity<Trip> confirmTrip(@PathVariable UUID id){
@@ -102,4 +86,32 @@ public class TripController {
         return ResponseEntity.notFound().build();
 
     }
+
+
+    @GetMapping("/{id}/participants")
+    public ResponseEntity<List<ParticipantData>> getAllParticipants(@PathVariable UUID id){
+        List<ParticipantData> participantsList = this.participantService.getAllParticipantsFromEvent(id);
+
+        return ResponseEntity.ok().body(participantsList);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Trip> updateTrip(@PathVariable UUID id, @RequestBody TripRequestPayload payload){
+         Optional<Trip> trip = this.tripRepository.findById(id);
+
+         if(trip.isPresent()){
+            Trip rawTrip = trip.get();
+            rawTrip.setDestination(payload.destination());
+            rawTrip.setStartsAt(LocalDateTime.parse(payload.starts_at(), DateTimeFormatter.ISO_DATE_TIME));
+            rawTrip.setEndsAt(LocalDateTime.parse(payload.ends_at(), DateTimeFormatter.ISO_DATE_TIME));
+            this.tripRepository.save(rawTrip);
+            return ResponseEntity.ok().body(rawTrip);
+        }
+
+        return ResponseEntity.notFound().build();
+                                     
+    }
+
+    
 }
