@@ -1,6 +1,7 @@
 package com.matheusmaciel.planner.trip;
 
 import com.matheusmaciel.planner.activities.Activity;
+import com.matheusmaciel.planner.activities.ActivityData;
 import com.matheusmaciel.planner.activities.ActivityRequestPayLoad;
 import com.matheusmaciel.planner.activities.ActivityResponse;
 import com.matheusmaciel.planner.activities.ActivityService;
@@ -113,6 +114,13 @@ public class TripController {
         List<ParticipantData> participantsList = this.participantService.getAllParticipantsFromEvent(id);
 
         return ResponseEntity.ok().body(participantsList);
+    }
+
+    @GetMapping("/{id}/activities")
+    public ResponseEntity<List<ActivityData>> getAllActivities(@PathVariable UUID id){
+        List<ActivityData> activitiesList = this.activityService.getAllActivitiesFromId(id);
+
+        return ResponseEntity.ok().body(activitiesList);
     }
 
 
