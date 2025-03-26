@@ -5,6 +5,9 @@ import com.matheusmaciel.planner.activities.ActivityData;
 import com.matheusmaciel.planner.activities.ActivityRequestPayLoad;
 import com.matheusmaciel.planner.activities.ActivityResponse;
 import com.matheusmaciel.planner.activities.ActivityService;
+import com.matheusmaciel.planner.link.LinkRequestPayLoad;
+import com.matheusmaciel.planner.link.LinkResponse;
+import com.matheusmaciel.planner.link.LinkService;
 import com.matheusmaciel.planner.participant.Participant;
 import com.matheusmaciel.planner.participant.ParticipantCreateResponse;
 import com.matheusmaciel.planner.participant.ParticipantData;
@@ -39,6 +42,9 @@ public class TripController {
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private LinkService linkService;
 
     @PostMapping("/create")
     public ResponseEntity<TripCreateResponse> createTrip(@RequestBody TripRequestPayload payload) {
@@ -81,6 +87,18 @@ public class TripController {
         return ResponseEntity.notFound().build();
     }
     
+    @PostMapping("/{id}/links")
+    public ResponseEntity<LinkResponse> registerLink(@PathVariable UUID id, @RequestBody LinkRequestPayLoad payload) {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+
+        if(trip.isPresent()){
+            Trip rawTrip = trip.get();
+            LinkResponse linkResponse = this.activityService.registerLink(payload, rawTrip);
+            return ResponseEntity.ok(linkResponse);
+     }
+
+         return ResponseEntity.notFound().build();
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Trip> getTripDetails(@PathVariable UUID id){
          Optional<Trip> trip = this.tripRepository.findById(id);
