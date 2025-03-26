@@ -2,4 +2,6 @@ package com.matheusmaciel.planner.link;
 
 import java.util.UUID;
 
-public record LinkResponse(UUID linkId) {}
+public record LinkData(UUID id, String title, String url) {
+
+}

@@ -5,6 +5,7 @@ import com.matheusmaciel.planner.activities.ActivityData;
 import com.matheusmaciel.planner.activities.ActivityRequestPayLoad;
 import com.matheusmaciel.planner.activities.ActivityResponse;
 import com.matheusmaciel.planner.activities.ActivityService;
+import com.matheusmaciel.planner.link.LinkData;
 import com.matheusmaciel.planner.link.LinkRequestPayLoad;
 import com.matheusmaciel.planner.link.LinkResponse;
 import com.matheusmaciel.planner.link.LinkService;
@@ -93,7 +94,7 @@ public class TripController {
 
         if(trip.isPresent()){
             Trip rawTrip = trip.get();
-            LinkResponse linkResponse = this.activityService.registerLink(payload, rawTrip);
+            LinkResponse linkResponse = this.linkService.registerLink(payload, rawTrip);
             return ResponseEntity.ok(linkResponse);
      }
 
@@ -139,6 +140,13 @@ public class TripController {
         List<ActivityData> activitiesList = this.activityService.getAllActivitiesFromId(id);
 
         return ResponseEntity.ok().body(activitiesList);
+    }
+
+    @GetMapping("/{id}/links")
+    public ResponseEntity<List<LinkData>> getAllLinks(@PathVariable UUID id){
+        List<LinkData> linksList = this.linkService.getAllLinksFromId(id);
+
+        return ResponseEntity.ok().body(linksList);
     }
 
 
